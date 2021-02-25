@@ -23,7 +23,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.imageResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.androiddevchallenge.R
+import com.example.androiddevchallenge.ui.theme.MyTheme
 
 @Composable
 fun AnimalCard(
@@ -39,4 +42,20 @@ fun AnimalCard(
             .padding(4.dp),
         contentScale = ContentScale.Crop
     )
+}
+
+@Preview("Light Theme")
+@Composable
+fun LightPreview() {
+    MyTheme {
+        AnimalCard(animalPhotoRes = R.drawable.dog1, animalPhotoContentDescription = "")
+    }
+}
+
+@Preview("Dark Theme")
+@Composable
+fun DarkPreview() {
+    MyTheme(darkTheme = true) {
+        AnimalCard(animalPhotoRes = R.drawable.dog1, animalPhotoContentDescription = "")
+    }
 }
