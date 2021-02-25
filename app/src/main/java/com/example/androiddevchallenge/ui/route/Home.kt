@@ -75,5 +75,3 @@ fun ToBeAdoptList(
         }
     }
 }
-
-

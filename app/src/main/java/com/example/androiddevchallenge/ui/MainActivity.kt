@@ -15,6 +15,8 @@
  */
 package com.example.androiddevchallenge.ui
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
@@ -30,6 +32,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
@@ -43,6 +46,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.androiddevchallenge.data.getAnimalByName
 import com.example.androiddevchallenge.ui.route.Detail
 import com.example.androiddevchallenge.ui.route.Home
+import com.example.androiddevchallenge.ui.route.Others
 import com.example.androiddevchallenge.ui.theme.MyTheme
 import dev.chrisbanes.accompanist.insets.ProvideWindowInsets
 import dev.chrisbanes.accompanist.insets.navigationBarsHeight
@@ -106,7 +110,16 @@ fun MyApp() {
                 Home(modifier = Modifier.padding(paddingValues), navController = navController)
             }
             composable(Screen.Others.route) {
-                Text("TBD", modifier = Modifier.padding(paddingValues))
+                val context = LocalContext.current
+                Others(
+                    modifier = Modifier.padding(paddingValues),
+                    launchWebsite = { uri ->
+                        val intent = Intent(Intent.ACTION_VIEW).apply {
+                            data = Uri.parse(uri)
+                        }
+                        context.startActivity(intent)
+                    }
+                )
             }
             composable("detail/{animalName}") { backStackEntry ->
                 Detail(animal = getAnimalByName(backStackEntry.arguments?.getString("animalName")))
