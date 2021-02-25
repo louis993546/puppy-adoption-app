@@ -19,6 +19,7 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -36,6 +37,11 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
+import androidx.navigation.NavController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.navigate
+import androidx.navigation.compose.rememberNavController
 import com.example.androiddevchallenge.ui.theme.MyTheme
 import dev.chrisbanes.accompanist.glide.GlideImage
 import dev.chrisbanes.accompanist.insets.ProvideWindowInsets
@@ -72,7 +78,9 @@ fun AnimalCard(
     animalPhotoContentDescription: String,
 ) {
     GlideImage(
-        modifier = modifier.aspectRatio(1f).padding(4.dp),
+        modifier = modifier
+            .aspectRatio(1f)
+            .padding(4.dp),
         data = animalPhotoRes,
         contentDescription = animalPhotoContentDescription,
         contentScale = ContentScale.Crop,
@@ -89,6 +97,7 @@ fun AnimalCard(
 fun ToBeAdoptList(
     modifier: Modifier = Modifier,
     animals: List<Animal>,
+    onAnimalClick: (Animal) -> Unit
 ) {
     val column = 2
     LazyVerticalGrid(modifier = modifier, cells = GridCells.Fixed(column)) {
@@ -99,6 +108,7 @@ fun ToBeAdoptList(
             Column {
                 Text(animal.name)
                 AnimalCard(
+                    modifier = Modifier.clickable { onAnimalClick(animal) },
                     animalPhotoRes = animal.imageRes,
                     animalPhotoContentDescription = animal.name
                 )
@@ -110,40 +120,79 @@ fun ToBeAdoptList(
 // Start building your app here!
 @Composable
 fun MyApp() {
+    val navController = rememberNavController()
+    NavHost(navController, startDestination = "home") {
+        composable("home") { Home(navController = navController) }
+        composable("detail/{animalName}") { backStackEntry -> 
+            Detail(animal = getAnimalByName(backStackEntry.arguments?.getString("animalName")))
+        }
+    }
+}
+
+fun getAnimalByName(name: String?): Animal = animals.first { it.name == name }
+
+@Composable
+fun Home(modifier: Modifier = Modifier, navController: NavController) {
     Scaffold(
+        modifier = modifier,
         backgroundColor = MaterialTheme.colors.background
     ) { innerPadding ->
         ToBeAdoptList(
             modifier = Modifier.padding(innerPadding),
-            animals = listOf(
-                Animal(
-                    name = "TBD 1",
-                    imageRes = R.drawable.dog1,
-                ),
-                Animal(
-                    name = "TBD 2",
-                    imageRes = R.drawable.dog2,
-                ),
-                Animal(
-                    name = "TBD 3",
-                    imageRes = R.drawable.dog3,
-                ),
-                Animal(
-                    name = "TBD 4",
-                    imageRes = R.drawable.dog4,
-                ),
-                Animal(
-                    name = "TBD 5",
-                    imageRes = R.drawable.dog5,
-                ),
-                Animal(
-                    name = "TBD 6",
-                    imageRes = R.drawable.dog6,
-                )
-            )
+            animals = animals,
+            onAnimalClick = {
+                navController.navigate("detail/${it.name}")
+            }
         )
     }
 }
+
+@Composable
+fun Detail(
+    modifier: Modifier = Modifier,
+    animal: Animal,
+) {
+    Column(modifier = modifier) {
+        Spacer(modifier = Modifier.statusBarsHeight())
+        GlideImage(
+            modifier = modifier,
+            data = animal.imageRes,
+            contentDescription = animal.name,
+            fadeIn = true,
+            error = { e ->
+                Timber.e(e.throwable)
+                Text("🙅‍")
+            }
+        )
+    }
+}
+
+val animals = listOf(
+    Animal(
+        name = "TBD 1",
+        imageRes = R.drawable.dog1,
+    ),
+    Animal(
+        name = "TBD 2",
+        imageRes = R.drawable.dog2,
+    ),
+    Animal(
+        name = "TBD 3",
+        imageRes = R.drawable.dog3,
+    ),
+    Animal(
+        name = "TBD 4",
+        imageRes = R.drawable.dog4,
+    ),
+    Animal(
+        name = "TBD 5",
+        imageRes = R.drawable.dog5,
+    ),
+    Animal(
+        name = "TBD 6",
+        imageRes = R.drawable.dog6,
+    )
+)
 
 @Preview("Light Theme", widthDp = 360, heightDp = 640)
 @Composable

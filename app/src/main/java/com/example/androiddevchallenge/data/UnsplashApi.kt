@@ -15,28 +15,28 @@
  */
 package com.example.androiddevchallenge.data
 
-//import retrofit2.http.GET
+// import retrofit2.http.GET
 //
-//interface UnsplashApi {
+// interface UnsplashApi {
 //    @GET("/search/photos")
 //    suspend fun search(): SearchResponse
-//}
+// }
 //
-//data class SearchResponse(
+// data class SearchResponse(
 //    val total: Int,
 //    val totalPages: Int,
 //    val results: List<SearchResponseResult>
-//)
+// )
 //
-//data class SearchResponseResult(
+// data class SearchResponseResult(
 //    val id: String,
 //    val urls: SearchResponseResultUrls
-//)
+// )
 //
-//data class SearchResponseResultUrls(
+// data class SearchResponseResultUrls(
 //    val raw: String,
 //    val full: String,
-//)
+// )
 
 // {
 //  "total": 133,
