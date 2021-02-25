@@ -123,7 +123,7 @@ fun MyApp() {
     val navController = rememberNavController()
     NavHost(navController, startDestination = "home") {
         composable("home") { Home(navController = navController) }
-        composable("detail/{animalName}") { backStackEntry -> 
+        composable("detail/{animalName}") { backStackEntry ->
             Detail(animal = getAnimalByName(backStackEntry.arguments?.getString("animalName")))
         }
     }
