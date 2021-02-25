@@ -20,47 +20,60 @@ import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.core.view.WindowCompat
 import com.example.androiddevchallenge.ui.theme.MyTheme
 import dev.chrisbanes.accompanist.glide.GlideImage
+import dev.chrisbanes.accompanist.insets.ProvideWindowInsets
+import dev.chrisbanes.accompanist.insets.statusBarsHeight
 import timber.log.Timber
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // This app draws behind the system bars, so we want to handle fitting system windows
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+
         setContent {
-            MyTheme {
-                MyApp()
+            ProvideWindowInsets {
+                MyTheme {
+                    MyApp()
+                }
             }
         }
     }
 }
 
+@Immutable
 data class Animal(
     val name: String,
-    val image: String,
+    val imageRes: Int,
 )
 
-// TODO how to give "fix" size to image?
 @Composable
 fun AnimalCard(
     modifier: Modifier = Modifier,
-    animalPhotoUrl: String,
+    animalPhotoRes: Int,
     animalPhotoContentDescription: String,
 ) {
     GlideImage(
-        modifier = modifier.aspectRatio(1f),
-        data = animalPhotoUrl,
+        modifier = modifier.aspectRatio(1f).padding(4.dp),
+        data = animalPhotoRes,
         contentDescription = animalPhotoContentDescription,
         contentScale = ContentScale.Crop,
         fadeIn = true,
@@ -77,12 +90,16 @@ fun ToBeAdoptList(
     modifier: Modifier = Modifier,
     animals: List<Animal>,
 ) {
-    LazyVerticalGrid(modifier = modifier, cells = GridCells.Fixed(2)) {
+    val column = 2
+    LazyVerticalGrid(modifier = modifier, cells = GridCells.Fixed(column)) {
+        repeat(column) {
+            item { Spacer(modifier = Modifier.statusBarsHeight()) }
+        }
         items(animals) { animal ->
             Column {
                 Text(animal.name)
                 AnimalCard(
-                    animalPhotoUrl = animal.image,
+                    animalPhotoRes = animal.imageRes,
                     animalPhotoContentDescription = animal.name
                 )
             }
@@ -93,44 +110,35 @@ fun ToBeAdoptList(
 // Start building your app here!
 @Composable
 fun MyApp() {
-    Surface(color = MaterialTheme.colors.background) {
+    Scaffold(
+        backgroundColor = MaterialTheme.colors.background
+    ) { innerPadding ->
         ToBeAdoptList(
+            modifier = Modifier.padding(innerPadding),
             animals = listOf(
                 Animal(
                     name = "TBD 1",
-                    image = "https://images.unsplash.com/photo-1416339306562-f3d12fefd36f?ixlib=rb-0.3.5&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=1080&fit=max&s=92f3e02f63678acc8416d044e189f515",
+                    imageRes = R.drawable.dog1,
                 ),
                 Animal(
                     name = "TBD 2",
-                    image = "https://images.unsplash.com/photo-1416339306562-f3d12fefd36f?ixlib=rb-0.3.5&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=1080&fit=max&s=92f3e02f63678acc8416d044e189f515",
+                    imageRes = R.drawable.dog2,
                 ),
                 Animal(
                     name = "TBD 3",
-                    image = "https://images.unsplash.com/photo-1416339306562-f3d12fefd36f?ixlib=rb-0.3.5&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=1080&fit=max&s=92f3e02f63678acc8416d044e189f515",
+                    imageRes = R.drawable.dog3,
                 ),
                 Animal(
                     name = "TBD 4",
-                    image = "https://images.unsplash.com/photo-1416339306562-f3d12fefd36f?ixlib=rb-0.3.5&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=1080&fit=max&s=92f3e02f63678acc8416d044e189f515",
+                    imageRes = R.drawable.dog4,
                 ),
                 Animal(
                     name = "TBD 5",
-                    image = "https://images.unsplash.com/photo-1416339306562-f3d12fefd36f?ixlib=rb-0.3.5&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=1080&fit=max&s=92f3e02f63678acc8416d044e189f515",
+                    imageRes = R.drawable.dog5,
                 ),
                 Animal(
                     name = "TBD 6",
-                    image = "https://images.unsplash.com/photo-1416339306562-f3d12fefd36f?ixlib=rb-0.3.5&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=1080&fit=max&s=92f3e02f63678acc8416d044e189f515",
-                ),
-                Animal(
-                    name = "TBD 7",
-                    image = "https://images.unsplash.com/photo-1416339306562-f3d12fefd36f?ixlib=rb-0.3.5&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=1080&fit=max&s=92f3e02f63678acc8416d044e189f515",
-                ),
-                Animal(
-                    name = "TBD 8",
-                    image = "https://images.unsplash.com/photo-1416339306562-f3d12fefd36f?ixlib=rb-0.3.5&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=1080&fit=max&s=92f3e02f63678acc8416d044e189f515",
-                ),
-                Animal(
-                    name = "TBD 9",
-                    image = "https://images.unsplash.com/photo-1416339306562-f3d12fefd36f?ixlib=rb-0.3.5&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=1080&fit=max&s=92f3e02f63678acc8416d044e189f515",
+                    imageRes = R.drawable.dog6,
                 )
             )
         )
